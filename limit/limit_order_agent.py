@@ -20,15 +20,17 @@ class LimitOrderAgent(PriceListener):
         self.order_type = order_type
 
     def on_price_tick(self, product_id: str, price: float):
-super().__init__()
-        self.execution_client = execution_client
-        self.product_id = product_id
-        self.limit_price = limit_price
-        self.quantity = quantity
-        self.order_type = order_type
+        if product_id == self.product_id:
+            if self.order_type == 'buy' and price <= self.limit_price:
+                self.execution_client.buy(self.product_id, self.quantity, self.limit_price)
+                print(f"Placed a buy order for {self.quantity} units of {self.product_id} at {self.limit_price}")
+            elif self.order_type == 'sell' and price >= self.limit_price:
+                self.execution_client.sell(self.product_id, self.quantity, self.limit_price)
+                print(f"Placed a sell order for {self.quantity} units of {self.product_id} at {self.limit_price}")
 
-    def on_price_tick(self, product_id: str, price: float):
-        class MockExecutionClient(ExecutionClient):
+
+    
+class MockExecutionClient(ExecutionClient):
     def buy(self, product_id: str, quantity: int, price: float):
         print(f"Buying {quantity} units of {product_id} at price {price}")
 
