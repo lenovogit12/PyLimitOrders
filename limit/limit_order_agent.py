@@ -36,6 +36,11 @@ super().__init__()
         print(f"Selling {quantity} units of {product_id} at price {price}")
 
 execution_client = MockExecutionClient()
+limit_order_agent = LimitOrderAgent(execution_client, product_id="IBM", limit_price=100.0, quantity=10, order_type='buy')
+price_ticks = [("IBM", 95.5), ("IBM", 105.2), ("IBM", 98.3)]
+for product_id, price in price_ticks:
+    limit_order_agent.on_price_tick(product_id, price)
+
 
 
 
